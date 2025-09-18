@@ -1,6 +1,10 @@
 import sys
 import json
 import easyocr
+import base64
+from io import BytesIO
+from PIL import Image
+import numpy as np
 
 reader = None
 
@@ -9,11 +13,21 @@ def init_reader(languages):
     reader = easyocr.Reader(languages)
     return json.dumps({"status": "success", "message": "Reader initialized"})
 
-def read_text(image_path):
+def is_base64(s):
+    try:
+        return base64.b64encode(base64.b64decode(s)).decode() == s
+    except Exception:
+        return False
+
+def read_text(image):
     if reader is None:
         return json.dumps({"status": "error", "message": "Reader not initialized"})
     
-    result = reader.readtext(image_path)
+    if (is_base64(image)):
+        image_data = base64.b64decode(image)
+        image = Image.open(BytesIO(image_data)).convert('RGB')
+    
+    result = reader.readtext(image)
     return json.dumps({
         "status": "success",
         "data": [{

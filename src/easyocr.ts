@@ -72,8 +72,8 @@ export class EasyOCR {
     }
   }
 
-  async readText(imagePath: string): Promise<OCRResult[]> {
-    const result = await this.sendCommand('read_text', [imagePath]);
+  async readText(image: string): Promise<OCRResult[]> {
+    const result = await this.sendCommand('read_text', [image]);
     if (result.status === 'success' && result.data) {
       return result.data;
     } else {
