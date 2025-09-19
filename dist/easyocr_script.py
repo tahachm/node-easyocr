@@ -23,9 +23,7 @@ def read_text(image):
     if reader is None:
         return json.dumps({"status": "error", "message": "Reader not initialized"})
     
-    if (is_base64(image)):
-        image_data = base64.b64decode(image)
-        image = Image.open(BytesIO(image_data)).convert('RGB')
+    image = base64.b64decode(image) if is_base64(image) else image
     
     result = reader.readtext(image)
     return json.dumps({
